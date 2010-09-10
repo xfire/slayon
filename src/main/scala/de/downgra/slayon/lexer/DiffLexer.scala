@@ -8,7 +8,13 @@ import de.downgra.slayon.token.Token
 import de.downgra.slayon.token.Text
 import de.downgra.slayon.token.Generic.{Inserted, Deleted, Subheading, Heading}
 
-object DiffLexer extends RegexParsers {
+object DiffLexer extends Lexer with RegexParsers {
+  val name = "Diff"
+  val aliases = List("diff", "udiff")
+  val filenames = List("*.diff", "*.patch")
+  val mimetypes = List("text/x-diff", "text/x-patch")
+
+
   override val skipWhitespace = false
 
   private def inserted = """(?m)^\+.*\n*""".r ^^ {
@@ -28,7 +34,13 @@ object DiffLexer extends RegexParsers {
   }
   private def diff = (subheading | heading | inserted | deleted | text) *
 
-  def parse(value: String): ParseResult[List[Token]] = parseAll(diff, value)
+  def parse(value: String): Result = toResult(parseAll(diff, value))
+
+  private def toResult(result: ParseResult[List[Token]]) = result match {
+    case Success(res, _) => Right(res)
+    case e: NoSuccess    => Left(e.msg)
+    case _               => Left("bad result")
+  }
 }
 
 // vim: set ts=2 sw=2 et:

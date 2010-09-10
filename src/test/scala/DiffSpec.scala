@@ -12,8 +12,8 @@ class DiffSpec extends FlatSpec with ShouldMatchers {
 
   "Empty input" should "result in an empty list of tokens" in {
     val res = DiffLexer.parse("")
-    res.successful should be === true
-    res.get.length should be === 0
+    res.isRight should be === true
+    res.right.get.length should be === 0
   }
 
 
@@ -59,10 +59,10 @@ class DiffSpec extends FlatSpec with ShouldMatchers {
 
   private def testPositiv(value: String, result: List[Token]) {
     val res = DiffLexer.parse(value)
-    res.successful should be === true
-    res.get.length should be === result.length
-    res.get should be === result
-    res.get map (_.content) mkString("") should be === value
+    res.isRight should be === true
+    res.right.get.length should be === result.length
+    res.right.get should be === result
+    res.right.get map (_.content) mkString("") should be === value
   }
 
 }

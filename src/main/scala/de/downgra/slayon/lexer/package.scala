@@ -5,7 +5,7 @@ import token.Token
 package object lexer {
   trait Lexer {
     /** result type of the lexing process */
-    type Result = Either[String, List[Token]]
+    type Result = Either[String, Seq[Token]]
 
     /** informations about the lexer */
     val name: String

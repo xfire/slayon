@@ -1,6 +1,5 @@
 package de.downgra.slayon.lexer
 
-import util.parsing.combinator.RegexParsers
 import util.matching.Regex
 import util.parsing.combinator.RegexParsers
 
@@ -8,14 +7,29 @@ import de.downgra.slayon.token.Token
 
 protected[lexer] trait RegexLexer extends Lexer with RegexParsers {
 
-  protected def makeResult(result: ParseResult[List[List[Token]]]) = result match {
-    case Success(res, _) => Right(res.flatten)
+  /** create a Lexer.Result from a ParseResult */
+  protected def makeResult(result: ParseResult[Seq[Seq[Token]]]) = result match {
+    case Success(res, _) => Right(pruneResult(res.flatten))
     case e: NoSuccess    => Left(e.msg)
     case _               => Left("bad result")
   }
 
-  protected def line(rx: String, token: String => Token): Parser[List[Token]] = {
-    """(?m)^%s\n*""".format(rx).r ^^ { x => List(token(x)) }
+  /** filter out empty tokens */
+  protected def pruneResult(result: Seq[Token]) = result filter { _.content.nonEmpty }
+
+  protected def line(rx: String, token: String => Token): Parser[Seq[Token]] = {
+    """(?m)^%s\n?""".format(rx).r ^^ { x => List(token(x)) }
+  }
+
+  protected def byGroups(r: Regex, tokens: List[String => Token]): Parser[Seq[Token]] = {
+    def nullToStr(s: String) = s match {
+      case s: String => s
+      case _ => ""
+    }
+    byGroups(r) ^^ { m =>
+      val max = math.min(m.groupCount, tokens.length)
+      for(i <- 1 to max) yield tokens(i - 1)(nullToStr(m.group(i)))
+    }
   }
 
   protected def byGroups(r: Regex): Parser[Regex.Match] = new Parser[Regex.Match] {

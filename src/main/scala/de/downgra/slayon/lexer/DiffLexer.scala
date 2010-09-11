@@ -8,7 +8,7 @@ import de.downgra.slayon.token.Token
 import de.downgra.slayon.token.Text
 import de.downgra.slayon.token.Generics.{Inserted, Deleted, Subheading, Heading}
 
-object DiffLexer extends Lexer with RegexParsers {
+object DiffLexer extends RegexLexer {
   val name = "Diff"
   val aliases = List("diff", "udiff")
   val filenames = List("*.diff", "*.patch")
@@ -17,30 +17,15 @@ object DiffLexer extends Lexer with RegexParsers {
 
   override val skipWhitespace = false
 
-  private def inserted = """(?m)^\+.*\n*""".r ^^ {
-    Inserted(_)
-  }
-  private def deleted = """(?m)^-.*\n*""".r ^^ {
-    Deleted(_)
-  }
-  private def subheading = """(?m)^@.*\n*""".r ^^ {
-    Subheading(_)
-  }
-  private def heading = ("""(?m)^Index.*\n*""".r | """(?m)^=.*\n*""".r) ^^ {
-    Heading(_)
-  }
-  private def text = """(?m)^.*\n*""".r ^^ {
-    Text(_)
-  }
-  private def diff = (subheading | heading | inserted | deleted | text) *
+  private def inserted = line("""\+.*""", Inserted)
+  private def deleted = line("""-.*""", Deleted)
+  private def subheading = line("""@.*""", Subheading)
+  private def headingA = line("""Index.*""", Heading)
+  private def headingB = line("""=.*""", Heading)
+  private def text = line(""".*""", Text)
+  private def diff = (subheading | headingA | headingB | inserted | deleted | text) *
 
-  def parse(value: String): Result = toResult(parseAll(diff, value))
-
-  private def toResult(result: ParseResult[List[Token]]) = result match {
-    case Success(res, _) => Right(res)
-    case e: NoSuccess    => Left(e.msg)
-    case _               => Left("bad result")
-  }
+  def parse(value: String): Result = makeResult(parseAll(diff, value))
 }
 
 // vim: set ts=2 sw=2 et:

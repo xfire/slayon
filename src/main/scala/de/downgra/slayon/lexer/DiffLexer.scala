@@ -6,7 +6,7 @@ import util.parsing.combinator.{Parsers, RegexParsers}
 
 import de.downgra.slayon.token.Token
 import de.downgra.slayon.token.Text
-import de.downgra.slayon.token.Generic.{Inserted, Deleted, Subheading, Heading}
+import de.downgra.slayon.token.Generics.{Inserted, Deleted, Subheading, Heading}
 
 object DiffLexer extends Lexer with RegexParsers {
   val name = "Diff"

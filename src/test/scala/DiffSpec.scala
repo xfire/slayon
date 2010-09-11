@@ -4,9 +4,8 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 import lexer.DiffLexer
-import token.Token
-import token.Text
-import token.Generic.{Inserted, Deleted, Subheading, Heading}
+import token.{Token, Text}
+import token.Generics.{Inserted, Deleted, Subheading, Heading}
 
 class DiffSpec extends FlatSpec with ShouldMatchers {
 

@@ -16,7 +16,7 @@ case class Punctuation(content: JString) extends Token
 case class Operator(content: JString) extends Token
 
 case class Generic(content: JString) extends Token
-object Generic {
+object Generics {
   case class Deleted(content: JString) extends Token
   case class Emph(content: JString) extends Token
   case class Error(content: JString) extends Token
@@ -30,7 +30,7 @@ object Generic {
 }
 
 case class Comment(content: JString) extends Token
-object Comment {
+object Comments {
   case class Multiline(content: JString) extends Token
   case class Preproc(content: JString) extends Token
   case class Single(content: JString) extends Token
@@ -38,7 +38,7 @@ object Comment {
 }
 
 case class Number(content: JString) extends Token
-object Number {
+object Numbers {
   case class Float(content: JString) extends Token
   case class Hex(content: JString) extends Token
   case class Integer(content: JString) extends Token
@@ -47,7 +47,7 @@ object Number {
 }
 
 case class String(content: JString) extends Token
-object String {
+object Strings {
   case class Backtick(content: JString) extends Token
   case class Char(content: JString) extends Token
   case class Doc(content: JString) extends Token
@@ -62,7 +62,7 @@ object String {
 }
 
 case class Name(content: JString) extends Token
-object Name {
+object Names {
   case class Attribute(content: JString) extends Token
   case class Builtin(content: JString) extends Token
   case class Class(content: JString) extends Token
@@ -77,7 +77,7 @@ object Name {
   case class Other(content: JString) extends Token
   case class Tag(content: JString) extends Token
   case class Variable(content: JString) extends Token
-  object Variable {
+  object Variables {
     case class Class(content: JString) extends Token
     case class Global(content: JString) extends Token
     case class Instance(content: JString) extends Token
@@ -85,7 +85,7 @@ object Name {
 }
 
 case class Keyword(content: JString) extends Token
-object Keyword {
+object Keywords {
   case class Constant(content: JString) extends Token
   case class Declaration(content: JString) extends Token
   case class Namespace(content: JString) extends Token
@@ -93,8 +93,6 @@ object Keyword {
   case class Reserved(content: JString) extends Token
   case class Type(content: JString) extends Token
 }
-
-
 
 
 // vim: set ts=2 sw=2 et:

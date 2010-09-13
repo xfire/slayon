@@ -4,7 +4,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 import lexer.DiffLexer
-import token.{Token, Text}
+import token.{Token, Text, Whitespace}
 import token.Generics.{Inserted, Deleted, Subheading, Heading}
 
 class DiffSpec extends FlatSpec with ShouldMatchers {
@@ -44,12 +44,12 @@ class DiffSpec extends FlatSpec with ShouldMatchers {
 
   "A simple input with all possible types" should "produce the correct resultlist" in {
     testPositiv("-ab\n+cd\n=foo\ntesttext line\nIndex:bar\n@spam\n",
-                List(Deleted("-ab\n"),
-                     Inserted("+cd\n"),
-                     Heading("=foo\n"),
-                     Text("testtext line\n"),
-                     Heading("Index:bar\n"),
-                     Subheading("@spam\n")))
+                List(Deleted("-ab"), Whitespace("\n"),
+                     Inserted("+cd"), Whitespace("\n"),
+                     Heading("=foo"), Whitespace("\n"),
+                     Text("testtext line"), Whitespace("\n"),
+                     Heading("Index:bar"), Whitespace("\n"),
+                     Subheading("@spam"), Whitespace("\n")))
   }
 
   private def testPositiv(value: Token) {
@@ -58,10 +58,12 @@ class DiffSpec extends FlatSpec with ShouldMatchers {
 
   private def testPositiv(value: String, result: List[Token]) {
     val res = DiffLexer.parse(value)
-    res.isRight should be === true
-    res.right.get.length should be === result.length
-    res.right.get should be === result
-    res.right.get map (_.content) mkString("") should be === value
+    res match {
+      case Left(s) => fail(s)
+      case Right(r) =>
+        r should be === result
+        r map (_.content) mkString("") should be === value
+    }
   }
 
 }

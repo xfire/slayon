@@ -4,7 +4,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
 
 import lexer.IniLexer
-import token.{Token, Text, Comment, Keyword, String => StringToken, Operator}
+import token.{Token, Whitespace, Comment, Keyword, String => StringToken, Operator}
 import token.Names.Attribute
 
 
@@ -18,8 +18,8 @@ class IniSpec extends FlatSpec with ShouldMatchers {
 
 
   "A single normal line only with spaces" should "produce a single text token" in {
-    testPositiv(Text("    "))
-    testPositiv(Text("  \t\t  \t"))
+    testPositiv(Whitespace("    "))
+    testPositiv(Whitespace("  \t\t  \t"))
   }
 
   "A single line starting with an ; or a #" should "produce a single comment token" in {
@@ -36,9 +36,9 @@ class IniSpec extends FlatSpec with ShouldMatchers {
   "A single line specifing a key/value pair" should "produce the correct token sequence" in {
     testPositiv("key = value",
                 List(Attribute("key"),
-                     Text(" "),
+                     Whitespace(" "),
                      Operator("="),
-                     Text(" "),
+                     Whitespace(" "),
                      StringToken("value")))
   }
 
@@ -63,18 +63,18 @@ class IniSpec extends FlatSpec with ShouldMatchers {
                    |k4 =v4
                    |[section 4]
                    |[section 5]""".stripMargin,
-                List(Comment("# this is a test\n"),
-                     Text("\n"),
-                     Keyword("[section 1]\n"),
-                     Attribute("k1"), Operator("="), StringToken("v 1"), Text("\n"),
-                     Attribute("k2"), Text("  "), Operator("="), Text("   "), StringToken("v2"), Text("\n"),
-                     Keyword("[section 2]\n"),
-                     Attribute("k3"), Operator("="), Text(" "), StringToken("v3"), Text("\n"),
-                     Text("\n"),
-                     Keyword("[section 3]\n"),
-                     Text("\n"),
-                     Attribute("k4"), Text(" "), Operator("="), StringToken("v4"), Text("\n"),
-                     Keyword("[section 4]\n"),
+                List(Comment("# this is a test"), Whitespace("\n\n"),
+                     Keyword("[section 1]"), Whitespace("\n"),
+                     Attribute("k1"), Operator("="), StringToken("v 1"), Whitespace("\n"),
+                     Attribute("k2"), Whitespace("  "), Operator("="), Whitespace("   "), StringToken("v2"),
+                     Whitespace("\n"),
+                     Keyword("[section 2]"), Whitespace("\n"),
+                     Attribute("k3"), Operator("="), Whitespace(" "), StringToken("v3"),
+                     Whitespace("\n\n"),
+                     Keyword("[section 3]"),
+                     Whitespace("\n\n"),
+                     Attribute("k4"), Whitespace(" "), Operator("="), StringToken("v4"), Whitespace("\n"),
+                     Keyword("[section 4]"), Whitespace("\n"),
                      Keyword("[section 5]")))
   }
 
@@ -82,12 +82,14 @@ class IniSpec extends FlatSpec with ShouldMatchers {
     testPositiv(value.content, List(value))
   }
 
-  private def testPositiv(value: String, result: Seq[Token]) {
+  private def testPositiv(value: String, result: List[Token]) {
     val res = IniLexer.parse(value)
-    res.isRight should be === true
-    // res.right.get.length should be === result.length
-    res.right.get should be === result
-    res.right.get map (_.content) mkString("") should be === value
+    res match {
+      case Left(s) => fail(s)
+      case Right(r) =>
+        r should be === result
+        r map (_.content) mkString("") should be === value
+    }
   }
 }
 

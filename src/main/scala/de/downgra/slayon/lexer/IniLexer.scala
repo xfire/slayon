@@ -4,7 +4,7 @@ import util.parsing.combinator.RegexParsers
 import util.matching.Regex
 import util.parsing.combinator.{Parsers, RegexParsers}
 
-import de.downgra.slayon.token.{Token, Text, Comment, Keyword, String => StringToken, Operator}
+import de.downgra.slayon.token.{Token, Whitespace, Comment, Keyword, String => StringToken, Operator}
 import de.downgra.slayon.token.Names.Attribute
 
 object IniLexer extends RegexLexer {
@@ -13,15 +13,24 @@ object IniLexer extends RegexLexer {
   val filenames = List("*.ini", "*.cfg")
   val mimetypes = List("text/x-ini")
 
-  override val skipWhitespace = false
+  override val defaultRegexFlags = "(?m)"
 
-  private def comment = line("""[;#].*""", Comment)
-  private def section = line("""\[[^]]*\]""", Keyword)
-  private def text = line("""\s+""", Text)
-  private def keyValuePair = byGroups("""(?m)^(.*?)([ \t]*)(=)([ \t]*)(.*)(\n?)""".r,
-    List(Attribute, Text, Operator, Text, StringToken, Text))
+  private def comment = """[;#].*$""".re
+  private def section = """\[[^]]*\]""".re
+  private def ws = """\s+""".re
 
-  private def ini = (comment | section | keyValuePair | text) *
+  private def wso = """\s*""".re
+  private def key = """[^\s=#;]+""".re
+  private def value = """[^\n\r]+""".re
+  private def operator = """=""".re
+  private def keyValuePair = key ~ wso ~ operator ~ wso ~ value
+
+  private def ini =
+    ( comment %% Comment
+    | section %% Keyword
+    | keyValuePair %%% (Attribute, Whitespace, Operator, Whitespace, StringToken)
+    | ws %% Whitespace
+    ) *
 
   def parse(value: String): Result = makeResult(parseAll(ini, value))
 }

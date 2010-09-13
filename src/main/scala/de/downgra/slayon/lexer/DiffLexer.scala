@@ -4,8 +4,7 @@ import util.parsing.combinator.RegexParsers
 import util.matching.Regex
 import util.parsing.combinator.{Parsers, RegexParsers}
 
-import de.downgra.slayon.token.Token
-import de.downgra.slayon.token.Text
+import de.downgra.slayon.token.{Token, Text, Whitespace}
 import de.downgra.slayon.token.Generics.{Inserted, Deleted, Subheading, Heading}
 
 object DiffLexer extends RegexLexer {
@@ -14,16 +13,25 @@ object DiffLexer extends RegexLexer {
   val filenames = List("*.diff", "*.patch")
   val mimetypes = List("text/x-diff", "text/x-patch")
 
+  override val defaultRegexFlags = "(?m)"
 
-  override val skipWhitespace = false
+  private def inserted = """^\+.*$""".re
+  private def deleted = """^-.*$""".re
+  private def subheading = """^@.*$""".re
+  private def headingA = """^Index.*$""".re
+  private def headingB = """^=.*$""".re
+  private def text = """[^\n\r]+""".re
+  private def ws = """[\n\r]+""".re
 
-  private def inserted = line("""\+.*""", Inserted)
-  private def deleted = line("""-.*""", Deleted)
-  private def subheading = line("""@.*""", Subheading)
-  private def headingA = line("""Index.*""", Heading)
-  private def headingB = line("""=.*""", Heading)
-  private def text = line(""".*""", Text)
-  private def diff = (subheading | headingA | headingB | inserted | deleted | text) *
+  private def diff = 
+    ( subheading %% Subheading
+    | headingA %% Heading
+    | headingB %% Heading
+    | inserted %% Inserted
+    | deleted %% Deleted
+    | text %% Text
+    | ws %% Whitespace
+    ) *
 
   def parse(value: String): Result = makeResult(parseAll(diff, value))
 }

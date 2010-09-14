@@ -1,6 +1,6 @@
 package de.downgra.slayon
 
-import org.scalatest.FlatSpec
+import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
 import lexer.IniLexer
@@ -8,32 +8,32 @@ import token.{Token, Whitespace, Comment, Keyword, String => StringToken, Operat
 import token.Names.Attribute
 
 
-class IniSpec extends FlatSpec with ShouldMatchers {
+class IniSpec extends FunSuite with ShouldMatchers {
 
-  "Empty input" should "result in an empty list of tokens" in {
+  test("empty input") {
     val res = IniLexer.parse("")
     res.isRight should be === true
     res.right.get.length should be === 0
   }
 
 
-  "A single normal line only with spaces" should "produce a single text token" in {
+  test("a single normal line only with spaces") {
     testPositiv(Whitespace("    "))
     testPositiv(Whitespace("  \t\t  \t"))
   }
 
-  "A single line starting with an ; or a #" should "produce a single comment token" in {
+  test("a single line specifing a comment") {
     testPositiv(Comment(";foo bar"))
     testPositiv(Comment("#test abc"))
   }
 
-  "A single line specifing a section" should "produce a single keyword token" in {
+  test("a single line specifing a section") {
     testPositiv(Keyword("[]"))
     testPositiv(Keyword("[foo]"))
     testPositiv(Keyword("[foo bar]"))
   }
 
-  "A single line specifing a key/value pair" should "produce the correct token sequence" in {
+  test("a single line specifing a key/value pair") {
     testPositiv("key = value",
                 List(Attribute("key"),
                      Whitespace(" "),
@@ -42,14 +42,14 @@ class IniSpec extends FlatSpec with ShouldMatchers {
                      StringToken("value")))
   }
 
-  "A single line specifing a key/value pair without spaces" should "produce a pruned token sequence" in {
+  test("a single line specifing a key/value pair without spaces") {
     testPositiv("key=value",
                 List(Attribute("key"),
                      Operator("="),
                      StringToken("value")))
   }
 
-  "A simple input with all possible types" should "produce the correct resultlist" in {
+  test("a simple input with all possible types") {
     testPositiv("""|# this is a test
                    |
                    |[section 1]

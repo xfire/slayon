@@ -1,48 +1,48 @@
 package de.downgra.slayon
 
-import org.scalatest.FlatSpec
+import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
 import lexer.DiffLexer
 import token.{Token, Text, Whitespace}
 import token.Generics.{Inserted, Deleted, Subheading, Heading}
 
-class DiffSpec extends FlatSpec with ShouldMatchers {
+class DiffSpec extends FunSuite with ShouldMatchers {
 
-  "Empty input" should "result in an empty list of tokens" in {
+  test("empty input") {
     val res = DiffLexer.parse("")
     res.isRight should be === true
     res.right.get.length should be === 0
   }
 
 
-  "A single normal line" should "produce a single text token" in {
+  test("A single normal line") {
     testPositiv(Text("abcde"))
     testPositiv(Text("test 123"))
     testPositiv(Text(" foo bar"))
   }
 
-  "A single line with an insertion" should "produce a single insertion token" in {
+  test("a single line with an insertion") {
     testPositiv(Inserted("+abcde"))
     testPositiv(Inserted("+++test"))
   }
 
-  "A single line with an deletion" should "produce a single deletion token" in {
+  test("a single line with an deletion") {
     testPositiv(Deleted("-ab cd e"))
     testPositiv(Deleted("---test"))
   }
 
-  "A single line with an heading" should "produce a single heading token" in {
+  test("a single line with an heading") {
     testPositiv(Heading("Index: foo"))
     testPositiv(Heading("=foo"))
   }
 
-  "A single line with an subheading" should "produce a single subheading token" in {
+  test("a single line with an subheading") {
     testPositiv(Subheading("@bar"))
     testPositiv(Subheading("@spam eggs"))
   }
 
-  "A simple input with all possible types" should "produce the correct resultlist" in {
+  test("a simple input with all possible types") {
     testPositiv("-ab\n+cd\n=foo\ntesttext line\nIndex:bar\n@spam\n",
                 List(Deleted("-ab"), Whitespace("\n"),
                      Inserted("+cd"), Whitespace("\n"),

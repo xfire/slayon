@@ -7,10 +7,12 @@ import lexer.JavaLexer
 import token.{Token, Text, Whitespace, Keyword}
 import token.{Comments, Names, Keywords}
 
-class JavaSpec extends FunSuite with ShouldMatchers {
+class JavaSpec extends FunSuite with ShouldMatchers with TokenTesters {
+
+  val lexer = JavaLexer
 
   test("empty input") {
-    val res = JavaLexer.parse("")
+    val res = lexer.parse("")
     res.isRight should be === true
     res.right.get.length should be === 0
   }
@@ -53,19 +55,6 @@ class JavaSpec extends FunSuite with ShouldMatchers {
     testPositiv(Keyword("if"))
   }
 
-  private def testPositiv(value: Token) {
-    testPositiv(value.content, List(value))
-  }
-
-  private def testPositiv(value: String, result: List[Token]) {
-    val res = JavaLexer.parse(value)
-    res match {
-      case Left(s) => fail(s)
-      case Right(r) =>
-        r should be === result
-        r map (_.content) mkString("") should be === value
-    }
-  }
 }
 
 // vim: set ts=2 sw=2 et:

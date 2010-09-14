@@ -7,11 +7,12 @@ import lexer.IniLexer
 import token.{Token, Whitespace, Comment, Keyword, String => StringToken, Operator}
 import token.Names.Attribute
 
+class IniSpec extends FunSuite with ShouldMatchers with TokenTesters {
 
-class IniSpec extends FunSuite with ShouldMatchers {
+  val lexer = IniLexer
 
   test("empty input") {
-    val res = IniLexer.parse("")
+    val res = lexer.parse("")
     res.isRight should be === true
     res.right.get.length should be === 0
   }
@@ -78,19 +79,6 @@ class IniSpec extends FunSuite with ShouldMatchers {
                      Keyword("[section 5]")))
   }
 
-  private def testPositiv(value: Token) {
-    testPositiv(value.content, List(value))
-  }
-
-  private def testPositiv(value: String, result: List[Token]) {
-    val res = IniLexer.parse(value)
-    res match {
-      case Left(s) => fail(s)
-      case Right(r) =>
-        r should be === result
-        r map (_.content) mkString("") should be === value
-    }
-  }
 }
 
 // vim: set ts=2 sw=2 et:

@@ -7,10 +7,12 @@ import lexer.DiffLexer
 import token.{Token, Text, Whitespace}
 import token.Generics.{Inserted, Deleted, Subheading, Heading}
 
-class DiffSpec extends FunSuite with ShouldMatchers {
+class DiffSpec extends FunSuite with ShouldMatchers with TokenTesters {
+
+  val lexer = DiffLexer
 
   test("empty input") {
-    val res = DiffLexer.parse("")
+    val res = lexer.parse("")
     res.isRight should be === true
     res.right.get.length should be === 0
   }
@@ -50,20 +52,6 @@ class DiffSpec extends FunSuite with ShouldMatchers {
                      Text("testtext line"), Whitespace("\n"),
                      Heading("Index:bar"), Whitespace("\n"),
                      Subheading("@spam"), Whitespace("\n")))
-  }
-
-  private def testPositiv(value: Token) {
-    testPositiv(value.content, List(value))
-  }
-
-  private def testPositiv(value: String, result: List[Token]) {
-    val res = DiffLexer.parse(value)
-    res match {
-      case Left(s) => fail(s)
-      case Right(r) =>
-        r should be === result
-        r map (_.content) mkString("") should be === value
-    }
   }
 
 }

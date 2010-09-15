@@ -4,7 +4,7 @@ import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
 import lexer.JavaLexer
-import token.{Token, Text, Whitespace, Keyword}
+import token.{Token, Text, Whitespace, Keyword, Operator}
 import token.{Comments, Names, Keywords}
 
 class JavaSpec extends FunSuite with ShouldMatchers with TokenTesters {
@@ -41,20 +41,41 @@ class JavaSpec extends FunSuite with ShouldMatchers with TokenTesters {
     testPositiv(Comments.Multiline("/* foo\nbar */"))
   }
 
-  test("nested multiline comments") {
-    // testPositiv(Comments.Multiline("/* foo\n/*bar*/\nfoo */"))
-  }
-
   test("single keywords") {
-    testPositiv(Keyword("case"))
-    testPositiv(Keyword("switch"))
-    testPositiv(Keyword("throw"))
-    testPositiv(Keyword("instanceof"))
-    testPositiv(Keyword("new"))
-    testPositiv(Keyword("return"))
-    testPositiv(Keyword("if"))
+    val words = "assert|break|case|catch|continue|default|do|" +
+                "else|finally|for|if|goto|instanceof|new|" +
+                "return|switch|this|throw|try|while"
+
+    words.split('|').foreach(s => testPositiv(Keyword(s)))
   }
 
+  test("single declaration keywords") {
+    val words = "abstract|const|enum|extends|final|implements|native|" +
+                "private|protected|public|static|strictfp|super|" +
+                "synchronized|throws|transient|volatile"
+
+    words.split('|').foreach(s => testPositiv(Keywords.Declaration(s)))
+  }
+
+  test("single type keywords") {
+    val words = "boolean|byte|char|double|float|int|long|short|void"
+
+    words.split('|').foreach(s => testPositiv(Keywords.Type(s)))
+  }
+
+  test("single method definition") {
+    testPositiv("void foo (", List(Keywords.Type("void"), Text(" "),
+                                   Names.Function("foo"), Text(" "),
+                                   Operator("(")))
+    testPositiv("public Person getPerson(", List(Keywords.Declaration("public"), Text(" "),
+                                                 Keywords.Type("Person"), Text(" "),
+                                                 Names.Function("getPerson"), Operator("(")))
+
+    testPositiv("public static int getX(", List(Keywords.Declaration("public"), Text(" "),
+                                                Keywords.Declaration("static"), Text(" "),
+                                                Keywords.Type("int"), Text(" "),
+                                                Names.Function("getX"), Operator("(")))
+  }
 }
 
 // vim: set ts=2 sw=2 et:

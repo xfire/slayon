@@ -69,6 +69,7 @@ trait Chaining extends Parsers {
          { case a ~ b ~ c ~ d ~ e ~ f ~ g ~ h =>
             List(f0(a), f1(b), f2(c), f3(d), f4(e), f4(f), f6(g), f7(h)) }
     }
- }
+
+}
 
 // vim: set ts=2 sw=2 et:

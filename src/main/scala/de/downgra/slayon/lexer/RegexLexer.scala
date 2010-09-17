@@ -5,7 +5,7 @@ import util.parsing.combinator.RegexParsers
 
 import de.downgra.slayon.token.Token
 
-protected[lexer] trait RegexLexer extends Lexer with RegexParsers with Chaining {
+protected[lexer] trait RegexLexer extends Lexer with RegexParsers with TokenizerSupport {
 
   override def skipWhitespace: Boolean = false
 
@@ -30,12 +30,6 @@ protected[lexer] trait RegexLexer extends Lexer with RegexParsers with Chaining 
   /** filter out empty tokens */
   protected def pruneResult(result: Seq[Token]) = result filter { _.content.nonEmpty }
 
-  implicit def toTokenList[T <: Parser[String]](x: T): TokenToList[T] = new TokenToList(x)
-  implicit def toTokenList(x: Regex): TokenToList[Parser[String]] = new TokenToList(x)
-  class TokenToList[T <: Parser[String]](l: T) {
-    def %%(f: (String) => Token): Parser[List[Token]] = l ^^ {x => List(f(x))}
-  }
- 
 }
 
 // vim: set ts=2 sw=2 et:

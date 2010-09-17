@@ -42,14 +42,8 @@ object JavaLexer extends RegexLexer {
     ( commentSingle %% Comments.Single
     | commentMulti  %% Comments.Multiline
     | decorator %% Names.Decorator
-    | methodDefinition ^^ { case m ~ w1 ~ r ~ w2 ~ n ~ w3 ~ o =>
-                              m.map(x => List(Keywords.Declaration(x._1), Text(x._2))).flatten ++
-                              List(Text(w1),
-                                   Keywords.Type(r),
-                                   Text(w2),
-                                   Names.Function(n),
-                                   Text(w3),
-                                   Operator(o))}
+    | methodDefinition *% (List(Keywords.Declaration, Text),
+                           List(Text, Keywords.Type, Text, Names.Function, Text, Operator))
     | keyword %% Keyword
     | declKeyword %% Keywords.Declaration
     | typeKeyword %% Keywords.Type

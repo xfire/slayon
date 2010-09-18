@@ -1,9 +1,9 @@
-package de.downgra.slayon.lexer
+package de.downgra.slayon.lexers
 
 import util.matching.Regex
 import util.parsing.combinator.RegexParsers
 
-import de.downgra.slayon.token.Token
+import de.downgra.slayon.tokens.Token
 
 trait TokenizerSupport {
   self: RegexParsers =>

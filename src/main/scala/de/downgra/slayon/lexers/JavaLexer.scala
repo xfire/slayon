@@ -1,12 +1,12 @@
-package de.downgra.slayon.lexer
+package de.downgra.slayon.lexers
 
 import util.parsing.combinator.RegexParsers
 import util.matching.Regex
 import util.parsing.combinator.{Parsers, RegexParsers}
 
-import de.downgra.slayon.token.{Token, Whitespace, Keyword, Operator,
-                                String => LString, Name}
-import de.downgra.slayon.token.{Comments, Names, Keywords, Strings, Numbers}
+import de.downgra.slayon.tokens.{Token, Whitespace, Keyword, Operator,
+                                 String => LString, Name}
+import de.downgra.slayon.tokens.{Comments, Names, Keywords, Strings, Numbers}
 
 object JavaLexer extends RegexLexer {
   val name = "Java"

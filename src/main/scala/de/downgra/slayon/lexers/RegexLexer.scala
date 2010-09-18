@@ -1,11 +1,11 @@
-package de.downgra.slayon.lexer
+package de.downgra.slayon.lexers
 
 import util.matching.Regex
 import util.parsing.combinator.RegexParsers
 
-import de.downgra.slayon.token.Token
+import de.downgra.slayon.tokens.Token
 
-protected[lexer] trait RegexLexer extends Lexer with RegexParsers with TokenizerSupport {
+protected[lexers] trait RegexLexer extends Lexer with RegexParsers with TokenizerSupport {
 
   override def skipWhitespace: Boolean = false
 

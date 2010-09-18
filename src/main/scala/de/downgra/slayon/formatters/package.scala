@@ -1,7 +1,7 @@
 package de.downgra.slayon
 
 import java.io.Writer
-import token.Token
+import tokens.Token
 
 package object formatters {
 

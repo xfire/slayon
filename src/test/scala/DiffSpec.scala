@@ -3,9 +3,9 @@ package de.downgra.slayon
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
-import lexer.DiffLexer
-import token.{Token, Text, Whitespace}
-import token.Generics.{Inserted, Deleted, Subheading, Heading}
+import lexers.DiffLexer
+import tokens.{Token, Text, Whitespace}
+import tokens.Generics.{Inserted, Deleted, Subheading, Heading}
 
 class DiffSpec extends FunSuite with ShouldMatchers with TokenTesters {
 

@@ -1,5 +1,5 @@
 package de.downgra.slayon
-package token
+package tokens
 
 import java.lang.{String => JString}
 

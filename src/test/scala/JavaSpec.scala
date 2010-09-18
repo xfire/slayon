@@ -3,9 +3,9 @@ package de.downgra.slayon
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
-import lexer.JavaLexer
-import token.{Token, Whitespace, Keyword, Operator, String => LString, Name}
-import token.{Comments, Names, Keywords, Strings, Numbers}
+import lexers.JavaLexer
+import tokens.{Token, Whitespace, Keyword, Operator, String => LString, Name}
+import tokens.{Comments, Names, Keywords, Strings, Numbers}
 
 class JavaSpec extends FunSuite with ShouldMatchers with TokenTesters {
 

@@ -3,9 +3,9 @@ package de.downgra.slayon
 import org.scalatest.FunSuite
 import org.scalatest.matchers.ShouldMatchers
 
-import lexer.IniLexer
-import token.{Token, Whitespace, Comment, Keyword, String => StringToken, Operator}
-import token.Names.Attribute
+import lexers.IniLexer
+import tokens.{Token, Whitespace, Comment, Keyword, String => StringToken, Operator}
+import tokens.Names.Attribute
 
 class IniSpec extends FunSuite with ShouldMatchers with TokenTesters {
 

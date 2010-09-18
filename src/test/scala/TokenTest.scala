@@ -1,7 +1,7 @@
 package de.downgra.slayon
 
-import lexer.Lexer
-import token.Token
+import lexers.Lexer
+import tokens.Token
 
 import org.scalatest.matchers.ShouldMatchers
 

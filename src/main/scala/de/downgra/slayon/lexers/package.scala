@@ -1,8 +1,8 @@
 package de.downgra.slayon
 
-import token.Token
+import tokens.Token
 
-package object lexer {
+package object lexers {
   trait Lexer {
     /** result type of the lexing process */
     type Result = Either[String, Seq[Token]]
